@@ -12,24 +12,19 @@ const {
   getPremiumTypes
 } = require('../controllers/userController');
 const { supabaseAuth: protect, requireAdmin: admin } = require('../middlewares/supabaseAuthMiddleware');
-const { 
-  userCacheMiddleware, 
-  invalidateCacheMiddleware,
-  cacheMiddleware
-} = require('../middlewares/cacheMiddleware');
 
-router.post('/register', invalidateCacheMiddleware(['user_']), registerUser);
+router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.post('/refresh-token', protect, refreshToken);
 
-router.get('/profile', protect, userCacheMiddleware, getUserProfile);
-router.put('/profile', protect, invalidateCacheMiddleware(['user_']), updateUserProfile);
+router.get('/profile', protect, getUserProfile);
+router.put('/profile', protect, updateUserProfile);
 
 // Rutas de premium
-router.get('/premium-types', protect, cacheMiddleware(3600), getPremiumTypes);
-router.put('/premium', protect, invalidateCacheMiddleware(['user_']), updateUserPremium);
+router.get('/premium-types', protect, getPremiumTypes);
+router.put('/premium', protect, updateUserPremium);
 
-router.get('/', protect, admin, userCacheMiddleware, getUsers);
-router.put('/:id/role', protect, admin, invalidateCacheMiddleware(['user_']), changeUserRole);
+router.get('/', protect, admin, getUsers);
+router.put('/:id/role', protect, admin, changeUserRole);
 
 module.exports = router;

@@ -15,39 +15,33 @@ const {
   removeVeterinarianFromFarm
 } = require('../controllers/farmController');
 const { supabaseAuth } = require('../middlewares/supabaseAuthMiddleware');
-const { 
-  farmCacheMiddleware, 
-  cattleCacheMiddleware,
-  userCacheMiddleware,
-  invalidateCacheMiddleware 
-} = require('../middlewares/cacheMiddleware');
 
 // Rutas básicas de granjas
 router.route('/')
-  .get(supabaseAuth, farmCacheMiddleware, getFarms)
-  .post(supabaseAuth, invalidateCacheMiddleware(['farms_', 'user_']), createFarm);
+  .get(supabaseAuth, getFarms)
+  .post(supabaseAuth, createFarm);
 
 router.route('/:id')
-  .get(supabaseAuth, farmCacheMiddleware, getFarmById)
-  .put(supabaseAuth, invalidateCacheMiddleware(['farms_', 'cattle_', 'user_']), updateFarm)
-  .delete(supabaseAuth, invalidateCacheMiddleware(['farms_', 'cattle_', 'user_']), deleteFarm);
+  .get(supabaseAuth, getFarmById)
+  .put(supabaseAuth, updateFarm)
+  .delete(supabaseAuth, deleteFarm);
 
 // Rutas para relaciones de granja
 router.route('/:id/cattle')
-  .get(supabaseAuth, cattleCacheMiddleware, getFarmCattle);
+  .get(supabaseAuth, getFarmCattle);
 
 router.route('/:id/workers')
-  .get(supabaseAuth, userCacheMiddleware, getFarmWorkers)
-  .post(supabaseAuth, invalidateCacheMiddleware(['user_', 'farms_']), addWorkerToFarm);
+  .get(supabaseAuth, getFarmWorkers)
+  .post(supabaseAuth, addWorkerToFarm);
 
 router.route('/:id/workers/:workerId')
-  .delete(supabaseAuth, invalidateCacheMiddleware(['user_', 'farms_']), removeWorkerFromFarm);
+  .delete(supabaseAuth, removeWorkerFromFarm);
 
 router.route('/:id/veterinarians')
-  .get(supabaseAuth, userCacheMiddleware, getFarmVeterinarians)
-  .post(supabaseAuth, invalidateCacheMiddleware(['user_', 'farms_']), addVeterinarianToFarm);
+  .get(supabaseAuth, getFarmVeterinarians)
+  .post(supabaseAuth, addVeterinarianToFarm);
 
 router.route('/:id/veterinarians/:vetId')
-  .delete(supabaseAuth, invalidateCacheMiddleware(['user_', 'farms_']), removeVeterinarianFromFarm);
+  .delete(supabaseAuth, removeVeterinarianFromFarm);
 
 module.exports = router; 
