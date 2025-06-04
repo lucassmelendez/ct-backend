@@ -11,23 +11,27 @@ const {
   getCattleWithFarmInfo
 } = require('../controllers/cattleController');
 const { supabaseAuth: protect } = require('../middlewares/supabaseAuthMiddleware');
+const { 
+  cattleCacheMiddleware, 
+  invalidateCacheMiddleware 
+} = require('../middlewares/cacheMiddleware');
 
 router.route('/')
-  .get(protect, getCattle)
-  .post(protect, createCattle);
+  .get(protect, cattleCacheMiddleware, getCattle)
+  .post(protect, invalidateCacheMiddleware(['cattle_', 'farms_']), createCattle);
 
 router.route('/with-farm-info')
-  .get(protect, getCattleWithFarmInfo);
+  .get(protect, cattleCacheMiddleware, getCattleWithFarmInfo);
 
 router.route('/:id')
-  .get(protect, getCattleById)
-  .put(protect, updateCattle)
-  .delete(protect, deleteCattle);
+  .get(protect, cattleCacheMiddleware, getCattleById)
+  .put(protect, invalidateCacheMiddleware(['cattle_', 'farms_']), updateCattle)
+  .delete(protect, invalidateCacheMiddleware(['cattle_', 'farms_']), deleteCattle);
 
 router.route('/:id/medical')
-  .post(protect, addMedicalRecord);
+  .post(protect, invalidateCacheMiddleware(['cattle_']), addMedicalRecord);
 
 router.route('/:id/medical-records')
-  .get(protect, getMedicalRecords);
+  .get(protect, cattleCacheMiddleware, getMedicalRecords);
 
 module.exports = router; 
