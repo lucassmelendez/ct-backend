@@ -251,6 +251,17 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       is_premium, id_premium
     } = req.body;
     
+    console.log('🔄 updateUserProfile - Datos recibidos:', req.body);
+    console.log('📊 Usuario autenticado UID:', req.user.uid);
+    
+    // PRIMERO: Obtener el usuario actual para preservar el rol
+    const currentUser = await supabaseUserModel.getUserById(req.user.uid);
+    console.log('📊 Usuario actual:', {
+      id_rol: currentUser?.id_rol,
+      email: currentUser?.email,
+      id_premium: currentUser?.id_premium
+    });
+    
     const updateData = {};
     if (email) updateData.email = email;
     if (password) updateData.password = password;
@@ -271,24 +282,37 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       updateData.name = name;
     }
     
+    console.log('📋 Datos a actualizar:', updateData);
+    
     const updatedUser = await supabaseUserModel.updateUser(req.user.uid, updateData);
     
-    // Obtener el rol del usuario actualizado
-    let role = 'user';
-    let id_rol = 2; // Default: trabajador
+    console.log('📥 Usuario actualizado del modelo:', {
+      id_rol: updatedUser?.id_rol,
+      email: updatedUser?.email,
+      id_premium: updatedUser?.id_premium
+    });
     
-    if (updatedUser.id_rol) {
+    // PRESERVAR el rol del usuario actual si no se especificó uno nuevo
+    let role = 'user';
+    let id_rol = currentUser?.id_rol || 2; // Usar el rol actual, no el por defecto
+    
+    // Solo cambiar el rol si el usuario actualizado tiene un rol diferente explícitamente
+    if (updatedUser.id_rol && updatedUser.id_rol !== currentUser?.id_rol) {
       id_rol = updatedUser.id_rol;
-      if (updatedUser.id_rol === 1) role = 'admin';
-      else if (updatedUser.id_rol === 3) role = 'veterinario';
-      else if (updatedUser.id_rol === 2) role = 'user'; // trabajador
     }
     
-    res.json({
+    // Convertir id_rol a string de rol
+    if (id_rol === 1) role = 'admin';
+    else if (id_rol === 3) role = 'veterinario';
+    else if (id_rol === 2) role = 'user'; // trabajador
+    
+    console.log('✅ Rol final asignado:', { id_rol, role });
+    
+    const response = {
       uid: updatedUser.uid || updatedUser.id_autentificar,
       email: updatedUser.email || '',
       role: role,
-      id_rol: id_rol, // Agregar el id_rol numérico
+      id_rol: id_rol, // Usar el rol preservado
       primer_nombre: updatedUser.primer_nombre || '',
       segundo_nombre: updatedUser.segundo_nombre || '',
       primer_apellido: updatedUser.primer_apellido || '',
@@ -297,8 +321,12 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       id_premium: updatedUser.id_premium || 1,
       is_premium: updatedUser.is_premium || 0,
       premium_type: updatedUser.premium_type || 'Free'
-    });
+    };
+    
+    console.log('📤 Respuesta final:', response);
+    res.json(response);
   } catch (error) {
+    console.error('❌ Error en updateUserProfile:', error);
     res.status(500);
     throw new Error('Error al actualizar perfil: ' + error.message);
   }
@@ -413,6 +441,66 @@ const getPremiumTypes = asyncHandler(async (req, res) => {
   }
 });
 
+/**
+ * Activa Premium ÚNICAMENTE sin tocar otros campos del usuario
+ * Endpoint específico para evitar pérdida de roles durante la activación
+ */
+const activatePremiumOnly = asyncHandler(async (req, res) => {
+  try {
+    const { payment_data } = req.body;
+    
+    console.log('🔄 activatePremiumOnly - Activando Premium para UID:', req.user.uid);
+    console.log('📊 Datos de pago (auditoría):', payment_data);
+    
+    // Obtener el usuario actual para preservar TODOS sus datos
+    const currentUser = await supabaseUserModel.getUserById(req.user.uid);
+    
+    if (!currentUser) {
+      res.status(404);
+      throw new Error('Usuario no encontrado');
+    }
+    
+    console.log('📊 Usuario actual antes de activar Premium:', {
+      id_rol: currentUser.id_rol,
+      email: currentUser.email,
+      id_premium: currentUser.id_premium,
+      nombre: `${currentUser.primer_nombre} ${currentUser.primer_apellido}`
+    });
+    
+    // Usar updateUserPremium que es más específico y seguro
+    const updatedUser = await supabaseUserModel.updateUserPremium(req.user.uid, 2);
+    
+    console.log('✅ Premium activado exitosamente:', {
+      id_rol: updatedUser.id_rol,
+      id_premium: updatedUser.id_premium,
+      premium_type: updatedUser.premium_type
+    });
+    
+    // Respuesta exitosa
+    res.json({
+      success: true,
+      message: 'Premium activado exitosamente preservando todos los datos del usuario',
+      user: {
+        uid: updatedUser.uid,
+        id_rol: updatedUser.id_rol, // Se preserva el rol original
+        email: updatedUser.email,
+        id_premium: updatedUser.id_premium,
+        is_premium: updatedUser.is_premium,
+        premium_type: updatedUser.premium_type,
+        primer_nombre: updatedUser.primer_nombre,
+        segundo_nombre: updatedUser.segundo_nombre,
+        primer_apellido: updatedUser.primer_apellido,
+        segundo_apellido: updatedUser.segundo_apellido
+      },
+      payment_data: payment_data // Para auditoría
+    });
+  } catch (error) {
+    console.error('❌ Error en activatePremiumOnly:', error);
+    res.status(500);
+    throw new Error('Error al activar Premium: ' + error.message);
+  }
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -422,5 +510,6 @@ module.exports = {
   changeUserRole,
   refreshToken,
   updateUserPremium,
-  getPremiumTypes
+  getPremiumTypes,
+  activatePremiumOnly
 };

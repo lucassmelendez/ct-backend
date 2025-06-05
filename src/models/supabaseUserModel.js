@@ -684,6 +684,7 @@ const updateUserPremium = async (uid, idPremium) => {
       id_usuario: data.id_usuario,
       email: authData ? authData.correo : '',
       role,
+      id_rol: data.rol ? data.rol.id_rol : 2, // Incluir el id_rol numérico
       primer_nombre: data.primer_nombre,
       segundo_nombre: data.segundo_nombre,
       primer_apellido: data.primer_apellido,
