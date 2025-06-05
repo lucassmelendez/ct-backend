@@ -121,6 +121,11 @@ const createUser = async (userData) => {
     if (userData.role === 'admin') id_rol = 1;
     else if (userData.role === 'veterinario') id_rol = 3;
     
+    // Asignar id_premium automáticamente para trabajadores y veterinarios
+    if (id_rol === 2 || id_rol === 3) {
+      id_premium = 3; // Asignar premium automáticamente a trabajadores y veterinarios
+    }
+    
     // Guardar información adicional en la tabla usuario
     const { data: profileData, error: profileError } = await supabase
       .from('usuario')
