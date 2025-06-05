@@ -567,41 +567,29 @@ const addWorkerToFinca = async (fincaId, workerAuthId) => {
 /**
  * Elimina un trabajador de una finca
  * @param {number} fincaId - ID de la finca
- * @param {string|number} workerId - ID del usuario (puede ser id_usuario o id_autentificar)
+ * @param {string} workerAuthId - ID de autenticación del trabajador
  * @returns {Promise<boolean>} - true si se eliminó correctamente
  */
-const removeWorkerFromFinca = async (fincaId, workerId) => {
+const removeWorkerFromFinca = async (fincaId, workerAuthId) => {
   try {
-    let idUsuario;
+    // Primero obtener el id_usuario a partir del id_autentificar
+    const { data: usuario, error: userError } = await supabase
+      .from('usuario')
+      .select('id_usuario')
+      .eq('id_autentificar', workerAuthId)
+      .single();
     
-    // Determinar si es un ID numérico (id_usuario) o UUID (id_autentificar)
-    const isNumeric = /^\d+$/.test(workerId.toString());
+    if (userError) {
+      console.error('Error al buscar usuario:', userError);
+      throw new Error('Usuario no encontrado');
+    }
     
-    if (isNumeric) {
-      // Es un id_usuario, usar directamente
-      idUsuario = parseInt(workerId.toString());
-    } else {
-      // Es un id_autentificar, buscar el id_usuario correspondiente
-      const { data: usuario, error: userError } = await supabase
-        .from('usuario')
-        .select('id_usuario')
-        .eq('id_autentificar', workerId)
-        .single();
-      
-      if (userError) {
-        console.error('Error al buscar usuario:', userError);
-        throw new Error('Usuario no encontrado');
-      }
-      
-      if (!usuario) {
-        throw new Error('Usuario no encontrado');
-      }
-      
-      idUsuario = usuario.id_usuario;
+    if (!usuario) {
+      throw new Error('Usuario no encontrado');
     }
     
     // Usar el modelo de usuario_finca para eliminar la asociación
-    return await usuarioFincaModel.desasociarUsuarioFinca(idUsuario, fincaId);
+    return await usuarioFincaModel.desasociarUsuarioFinca(usuario.id_usuario, fincaId);
   } catch (error) {
     console.error('Error al eliminar trabajador de la finca:', error);
     throw error;
@@ -648,41 +636,29 @@ const addVeterinarianToFinca = async (fincaId, vetAuthId) => {
 /**
  * Elimina un veterinario de una finca
  * @param {number} fincaId - ID de la finca
- * @param {string|number} vetId - ID del usuario (puede ser id_usuario o id_autentificar)
+ * @param {string} vetAuthId - ID de autenticación del veterinario
  * @returns {Promise<boolean>} - true si se eliminó correctamente
  */
-const removeVeterinarianFromFinca = async (fincaId, vetId) => {
+const removeVeterinarianFromFinca = async (fincaId, vetAuthId) => {
   try {
-    let idUsuario;
+    // Primero obtener el id_usuario a partir del id_autentificar
+    const { data: usuario, error: userError } = await supabase
+      .from('usuario')
+      .select('id_usuario')
+      .eq('id_autentificar', vetAuthId)
+      .single();
     
-    // Determinar si es un ID numérico (id_usuario) o UUID (id_autentificar)
-    const isNumeric = /^\d+$/.test(vetId.toString());
+    if (userError) {
+      console.error('Error al buscar usuario:', userError);
+      throw new Error('Usuario no encontrado');
+    }
     
-    if (isNumeric) {
-      // Es un id_usuario, usar directamente
-      idUsuario = parseInt(vetId.toString());
-    } else {
-      // Es un id_autentificar, buscar el id_usuario correspondiente
-      const { data: usuario, error: userError } = await supabase
-        .from('usuario')
-        .select('id_usuario')
-        .eq('id_autentificar', vetId)
-        .single();
-      
-      if (userError) {
-        console.error('Error al buscar usuario:', userError);
-        throw new Error('Usuario no encontrado');
-      }
-      
-      if (!usuario) {
-        throw new Error('Usuario no encontrado');
-      }
-      
-      idUsuario = usuario.id_usuario;
+    if (!usuario) {
+      throw new Error('Usuario no encontrado');
     }
     
     // Usar el modelo de usuario_finca para eliminar la asociación
-    return await usuarioFincaModel.desasociarUsuarioFinca(idUsuario, fincaId);
+    return await usuarioFincaModel.desasociarUsuarioFinca(usuario.id_usuario, fincaId);
   } catch (error) {
     console.error('Error al eliminar veterinario de la finca:', error);
     throw error;
