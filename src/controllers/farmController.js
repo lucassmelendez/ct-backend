@@ -254,33 +254,7 @@ const getFarmVeterinarians = asyncHandler(async (req, res) => {
   }
 });
 
-/**
- * @desc    Agregar un trabajador a una finca
- * @route   POST /api/farms/:id/workers
- * @access  Private
- */
-const addWorkerToFarm = asyncHandler(async (req, res) => {
-  try {
-    res.status(501).json({ message: 'Funcionalidad no implementada en Supabase' });
-  } catch (error) {
-    res.status(500);
-    throw new Error('Error al agregar trabajador a la finca: ' + error.message);
-  }
-});
 
-/**
- * @desc    Agregar un veterinario a una finca
- * @route   POST /api/farms/:id/veterinarians
- * @access  Private
- */
-const addVeterinarianToFarm = asyncHandler(async (req, res) => {
-  try {
-    res.status(501).json({ message: 'Funcionalidad no implementada en Supabase' });
-  } catch (error) {
-    res.status(500);
-    throw new Error('Error al agregar veterinario a la finca: ' + error.message);
-  }
-});
 
 /**
  * @desc    Eliminar un trabajador de una finca
@@ -289,7 +263,23 @@ const addVeterinarianToFarm = asyncHandler(async (req, res) => {
  */
 const removeWorkerFromFarm = asyncHandler(async (req, res) => {
   try {
-    res.status(501).json({ message: 'Funcionalidad no implementada en Supabase' });
+    const { workerId } = req.params;
+    
+    if (!workerId) {
+      res.status(400);
+      throw new Error('ID del trabajador es requerido');
+    }
+    
+    const result = await supabaseService.removeWorkerFromFinca(req.params.id, workerId);
+    
+    if (result) {
+      res.json({
+        message: 'Trabajador eliminado exitosamente de la finca'
+      });
+    } else {
+      res.status(404);
+      throw new Error('No se encontró la relación trabajador-finca');
+    }
   } catch (error) {
     res.status(500);
     throw new Error('Error al eliminar trabajador de la finca: ' + error.message);
@@ -303,7 +293,23 @@ const removeWorkerFromFarm = asyncHandler(async (req, res) => {
  */
 const removeVeterinarianFromFarm = asyncHandler(async (req, res) => {
   try {
-    res.status(501).json({ message: 'Funcionalidad no implementada en Supabase' });
+    const { vetId } = req.params;
+    
+    if (!vetId) {
+      res.status(400);
+      throw new Error('ID del veterinario es requerido');
+    }
+    
+    const result = await supabaseService.removeVeterinarianFromFinca(req.params.id, vetId);
+    
+    if (result) {
+      res.json({
+        message: 'Veterinario eliminado exitosamente de la finca'
+      });
+    } else {
+      res.status(404);
+      throw new Error('No se encontró la relación veterinario-finca');
+    }
   } catch (error) {
     res.status(500);
     throw new Error('Error al eliminar veterinario de la finca: ' + error.message);
@@ -319,8 +325,6 @@ module.exports = {
   getFarmCattle,
   getFarmWorkers,
   getFarmVeterinarians,
-  addWorkerToFarm,
-  addVeterinarianToFarm,
   removeWorkerFromFarm,
   removeVeterinarianFromFarm
 };

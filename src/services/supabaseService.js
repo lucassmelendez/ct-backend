@@ -387,6 +387,36 @@ class SupabaseService {
     }
   }
 
+  /**
+   * Elimina un trabajador de una finca
+   * @param {number} fincaId - ID de la finca
+   * @param {string} workerAuthId - ID de autenticación del trabajador
+   * @returns {Promise<boolean>} - true si se eliminó correctamente
+   */
+  async removeWorkerFromFinca(fincaId, workerAuthId) {
+    try {
+      return await fincaModel.removeWorkerFromFinca(fincaId, workerAuthId);
+    } catch (error) {
+      console.error('Error al eliminar trabajador de la finca:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Elimina un veterinario de una finca
+   * @param {number} fincaId - ID de la finca
+   * @param {string} vetAuthId - ID de autenticación del veterinario
+   * @returns {Promise<boolean>} - true si se eliminó correctamente
+   */
+  async removeVeterinarianFromFinca(fincaId, vetAuthId) {
+    try {
+      return await fincaModel.removeVeterinarianFromFinca(fincaId, vetAuthId);
+    } catch (error) {
+      console.error('Error al eliminar veterinario de la finca:', error);
+      throw error;
+    }
+  }
+
   // ===== MÉTODOS ESPECIALES =====
 
   /**

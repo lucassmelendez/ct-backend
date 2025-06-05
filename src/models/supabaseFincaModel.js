@@ -527,6 +527,144 @@ const getFincaVeterinarios = async (fincaId) => {
   }
 };
 
+/**
+ * Agrega un trabajador a una finca
+ * @param {number} fincaId - ID de la finca
+ * @param {string} workerAuthId - ID de autenticación del trabajador
+ * @returns {Promise<Object>} - Relación creada
+ */
+const addWorkerToFinca = async (fincaId, workerAuthId) => {
+  try {
+    // Primero obtener el id_usuario a partir del id_autentificar
+    const { data: usuario, error: userError } = await supabase
+      .from('usuario')
+      .select('id_usuario, id_rol')
+      .eq('id_autentificar', workerAuthId)
+      .single();
+    
+    if (userError) {
+      console.error('Error al buscar usuario:', userError);
+      throw new Error('Usuario no encontrado');
+    }
+    
+    if (!usuario) {
+      throw new Error('Usuario no encontrado');
+    }
+    
+    // Verificar que el usuario sea un trabajador (id_rol = 2)
+    if (usuario.id_rol !== 2) {
+      throw new Error('El usuario no tiene rol de trabajador');
+    }
+    
+    // Usar el modelo de usuario_finca para crear la asociación
+    return await usuarioFincaModel.asociarUsuarioFinca(usuario.id_usuario, fincaId);
+  } catch (error) {
+    console.error('Error al agregar trabajador a la finca:', error);
+    throw error;
+  }
+};
+
+/**
+ * Elimina un trabajador de una finca
+ * @param {number} fincaId - ID de la finca
+ * @param {string} workerAuthId - ID de autenticación del trabajador
+ * @returns {Promise<boolean>} - true si se eliminó correctamente
+ */
+const removeWorkerFromFinca = async (fincaId, workerAuthId) => {
+  try {
+    // Primero obtener el id_usuario a partir del id_autentificar
+    const { data: usuario, error: userError } = await supabase
+      .from('usuario')
+      .select('id_usuario')
+      .eq('id_autentificar', workerAuthId)
+      .single();
+    
+    if (userError) {
+      console.error('Error al buscar usuario:', userError);
+      throw new Error('Usuario no encontrado');
+    }
+    
+    if (!usuario) {
+      throw new Error('Usuario no encontrado');
+    }
+    
+    // Usar el modelo de usuario_finca para eliminar la asociación
+    return await usuarioFincaModel.desasociarUsuarioFinca(usuario.id_usuario, fincaId);
+  } catch (error) {
+    console.error('Error al eliminar trabajador de la finca:', error);
+    throw error;
+  }
+};
+
+/**
+ * Agrega un veterinario a una finca
+ * @param {number} fincaId - ID de la finca
+ * @param {string} vetAuthId - ID de autenticación del veterinario
+ * @returns {Promise<Object>} - Relación creada
+ */
+const addVeterinarianToFinca = async (fincaId, vetAuthId) => {
+  try {
+    // Primero obtener el id_usuario a partir del id_autentificar
+    const { data: usuario, error: userError } = await supabase
+      .from('usuario')
+      .select('id_usuario, id_rol')
+      .eq('id_autentificar', vetAuthId)
+      .single();
+    
+    if (userError) {
+      console.error('Error al buscar usuario:', userError);
+      throw new Error('Usuario no encontrado');
+    }
+    
+    if (!usuario) {
+      throw new Error('Usuario no encontrado');
+    }
+    
+    // Verificar que el usuario sea un veterinario (id_rol = 3)
+    if (usuario.id_rol !== 3) {
+      throw new Error('El usuario no tiene rol de veterinario');
+    }
+    
+    // Usar el modelo de usuario_finca para crear la asociación
+    return await usuarioFincaModel.asociarUsuarioFinca(usuario.id_usuario, fincaId);
+  } catch (error) {
+    console.error('Error al agregar veterinario a la finca:', error);
+    throw error;
+  }
+};
+
+/**
+ * Elimina un veterinario de una finca
+ * @param {number} fincaId - ID de la finca
+ * @param {string} vetAuthId - ID de autenticación del veterinario
+ * @returns {Promise<boolean>} - true si se eliminó correctamente
+ */
+const removeVeterinarianFromFinca = async (fincaId, vetAuthId) => {
+  try {
+    // Primero obtener el id_usuario a partir del id_autentificar
+    const { data: usuario, error: userError } = await supabase
+      .from('usuario')
+      .select('id_usuario')
+      .eq('id_autentificar', vetAuthId)
+      .single();
+    
+    if (userError) {
+      console.error('Error al buscar usuario:', userError);
+      throw new Error('Usuario no encontrado');
+    }
+    
+    if (!usuario) {
+      throw new Error('Usuario no encontrado');
+    }
+    
+    // Usar el modelo de usuario_finca para eliminar la asociación
+    return await usuarioFincaModel.desasociarUsuarioFinca(usuario.id_usuario, fincaId);
+  } catch (error) {
+    console.error('Error al eliminar veterinario de la finca:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   createFinca,
   getFincaById,
@@ -536,5 +674,9 @@ module.exports = {
   getFincasByOwner,
   getFincaGanados,
   getFincaTrabajadores,
-  getFincaVeterinarios
+  getFincaVeterinarios,
+  addWorkerToFinca,
+  removeWorkerFromFinca,
+  addVeterinarianToFinca,
+  removeVeterinarianFromFinca
 };
