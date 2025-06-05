@@ -9,8 +9,6 @@ const {
   getFarmCattle,
   getFarmWorkers,
   getFarmVeterinarians,
-  addWorkerToFarm,
-  addVeterinarianToFarm,
   removeWorkerFromFarm,
   removeVeterinarianFromFarm
 } = require('../controllers/farmController');
@@ -31,15 +29,13 @@ router.route('/:id/cattle')
   .get(supabaseAuth, getFarmCattle);
 
 router.route('/:id/workers')
-  .get(supabaseAuth, getFarmWorkers)
-  .post(supabaseAuth, addWorkerToFarm);
+  .get(supabaseAuth, getFarmWorkers);
 
 router.route('/:id/workers/:workerId')
   .delete(supabaseAuth, removeWorkerFromFarm);
 
 router.route('/:id/veterinarians')
-  .get(supabaseAuth, getFarmVeterinarians)
-  .post(supabaseAuth, addVeterinarianToFarm);
+  .get(supabaseAuth, getFarmVeterinarians);
 
 router.route('/:id/veterinarians/:vetId')
   .delete(supabaseAuth, removeVeterinarianFromFarm);
