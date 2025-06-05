@@ -628,17 +628,19 @@ const addMedicalRecord = async (id, medicalData) => {
       throw new Error(`El ganado con ID ${id} no existe`);
     }
     
+    // Preparar datos solo con los campos que existen en la tabla
+    const veterinaryData = {
+      fecha_tratamiento: medicalData.fecha_tratamiento || medicalData.fecha || new Date().toISOString(),
+      diagnostico: medicalData.diagnostico || medicalData.descripcion || '',
+      tratamiento: medicalData.tratamiento || '',
+      nota: medicalData.nota || medicalData.notas || ''
+    };
+    
     // Si ya tiene información veterinaria, actualizarla
     if (ganado.id_informacion_veterinaria) {
       const { data, error } = await supabase
         .from('informacion_veterinaria')
-        .update({
-          fecha_tratamiento: medicalData.fecha || new Date().toISOString(),
-          diagnostico: medicalData.diagnostico || medicalData.descripcion || '',
-          tratamiento: medicalData.tratamiento || '',
-          nota: medicalData.nota || medicalData.notas || '',
-          updated_at: new Date().toISOString()
-        })
+        .update(veterinaryData)
         .eq('id_informacion_veterinaria', ganado.id_informacion_veterinaria)
         .select()
         .single();
@@ -652,14 +654,7 @@ const addMedicalRecord = async (id, medicalData) => {
       // Crear nueva información veterinaria
       const { data, error } = await supabase
         .from('informacion_veterinaria')
-        .insert({
-          fecha_tratamiento: medicalData.fecha || new Date().toISOString(),
-          diagnostico: medicalData.diagnostico || medicalData.descripcion || '',
-          tratamiento: medicalData.tratamiento || '',
-          nota: medicalData.nota || medicalData.notas || '',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })
+        .insert(veterinaryData)
         .select()
         .single();
       
