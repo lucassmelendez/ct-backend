@@ -501,6 +501,37 @@ const activatePremiumOnly = asyncHandler(async (req, res) => {
   }
 });
 
+/**
+ * @desc    Eliminar cuenta de usuario
+ * @route   DELETE /api/users/delete-account
+ * @access  Private
+ */
+const deleteUserAccount = asyncHandler(async (req, res) => {
+  try {
+    const userId = req.user.uid;
+    
+    console.log('🗑️ Eliminando cuenta de usuario:', userId);
+    
+    // Eliminar el usuario usando el modelo
+    const result = await supabaseUserModel.deleteUser(userId);
+    
+    if (result) {
+      console.log('✅ Cuenta eliminada exitosamente:', userId);
+      res.json({
+        success: true,
+        message: 'Cuenta eliminada exitosamente'
+      });
+    } else {
+      res.status(500);
+      throw new Error('No se pudo eliminar la cuenta');
+    }
+  } catch (error) {
+    console.error('❌ Error al eliminar cuenta:', error);
+    res.status(500);
+    throw new Error('Error al eliminar cuenta: ' + error.message);
+  }
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -511,5 +542,6 @@ module.exports = {
   refreshToken,
   updateUserPremium,
   getPremiumTypes,
-  activatePremiumOnly
+  activatePremiumOnly,
+  deleteUserAccount
 };

@@ -10,7 +10,8 @@ const {
   refreshToken,
   updateUserPremium,
   getPremiumTypes,
-  activatePremiumOnly
+  activatePremiumOnly,
+  deleteUserAccount
 } = require('../controllers/userController');
 const { supabaseAuth: protect, requireAdmin: admin } = require('../middlewares/supabaseAuthMiddleware');
 
@@ -20,6 +21,7 @@ router.post('/refresh-token', protect, refreshToken);
 
 router.get('/profile', protect, getUserProfile);
 router.put('/profile', protect, updateUserProfile);
+router.delete('/delete-account', protect, deleteUserAccount);
 
 // Rutas de premium
 router.get('/premium-types', protect, getPremiumTypes);
