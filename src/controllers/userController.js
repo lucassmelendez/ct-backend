@@ -209,9 +209,13 @@ const getUserProfile = asyncHandler(async (req, res) => {
       
       // Determinar rol del usuario
       let role = 'user';
+      let id_rol = 2; // Default: trabajador
+      
       if (user.rol && user.rol.id_rol) {
+        id_rol = user.rol.id_rol;
         if (user.rol.id_rol === 1) role = 'admin';
         else if (user.rol.id_rol === 3) role = 'veterinario';
+        else if (user.rol.id_rol === 2) role = 'user'; // trabajador
       }
       
       res.json({
@@ -219,6 +223,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
         name: `${user.primer_nombre} ${user.primer_apellido}`,
         email: authData ? authData.correo : '',
         role: role,
+        id_rol: id_rol, // Agregar el id_rol numérico
         primer_nombre: user.primer_nombre || '',
         segundo_nombre: user.segundo_nombre || '',
         primer_apellido: user.primer_apellido || '',
@@ -270,15 +275,20 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     
     // Obtener el rol del usuario actualizado
     let role = 'user';
+    let id_rol = 2; // Default: trabajador
+    
     if (updatedUser.id_rol) {
+      id_rol = updatedUser.id_rol;
       if (updatedUser.id_rol === 1) role = 'admin';
       else if (updatedUser.id_rol === 3) role = 'veterinario';
+      else if (updatedUser.id_rol === 2) role = 'user'; // trabajador
     }
     
     res.json({
       uid: updatedUser.uid || updatedUser.id_autentificar,
       email: updatedUser.email || '',
       role: role,
+      id_rol: id_rol, // Agregar el id_rol numérico
       primer_nombre: updatedUser.primer_nombre || '',
       segundo_nombre: updatedUser.segundo_nombre || '',
       primer_apellido: updatedUser.primer_apellido || '',

@@ -105,6 +105,7 @@ class SupabaseAuthService {
         uid: userAuth.uid,
         email: userAuth.email,
         role: userAuth.role,
+        id_rol: userAuth.id_rol, // Agregar el id_rol numérico
         name: userAuth.name || '',
         primer_nombre: userAuth.primer_nombre || '',
         segundo_nombre: userAuth.segundo_nombre || '',
