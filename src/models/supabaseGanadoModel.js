@@ -61,10 +61,14 @@ const createGanado = async (datos) => {
     // Si se proporciona información veterinaria pero no hay ID existente
     if (datos.informacion_veterinaria && !datos.id_informacion_veterinaria) {
       const infoVetData = {
-        fecha_tratamiento: datos.informacion_veterinaria.fecha_tratamiento || new Date().toISOString(),
+        fecha_ini_tratamiento: datos.informacion_veterinaria.fecha_tratamiento || datos.informacion_veterinaria.fecha_ini_tratamiento || new Date().toISOString(),
         diagnostico: datos.informacion_veterinaria.diagnostico || '',
         tratamiento: datos.informacion_veterinaria.tratamiento || '',
         nota: datos.informacion_veterinaria.nota || '',
+        fecha_fin_tratamiento: datos.informacion_veterinaria.fecha_fin_tratamiento || null,
+        medicamento: datos.informacion_veterinaria.medicamento || '',
+        dosis: datos.informacion_veterinaria.dosis || null,
+        cantidad_horas: datos.informacion_veterinaria.cantidad_horas || null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
@@ -628,12 +632,16 @@ const addMedicalRecord = async (id, medicalData) => {
       throw new Error(`El ganado con ID ${id} no existe`);
     }
     
-    // Preparar datos solo con los campos que existen en la tabla
+    // Preparar datos con los nombres correctos de las columnas
     const veterinaryData = {
-      fecha_tratamiento: medicalData.fecha_tratamiento || medicalData.fecha || new Date().toISOString(),
+      fecha_ini_tratamiento: medicalData.fecha_tratamiento || medicalData.fecha || new Date().toISOString(),
       diagnostico: medicalData.diagnostico || medicalData.descripcion || '',
       tratamiento: medicalData.tratamiento || '',
-      nota: medicalData.nota || medicalData.notas || ''
+      nota: medicalData.nota || medicalData.notas || '',
+      fecha_fin_tratamiento: medicalData.fecha_fin_tratamiento || null,
+      medicamento: medicalData.medicamento || '',
+      dosis: medicalData.dosis || null,
+      cantidad_horas: medicalData.cantidad_horas || null
     };
     
     // Si ya tiene información veterinaria, actualizarla
