@@ -12,7 +12,11 @@ const createInformacionVeterinaria = async (datos) => {
       fecha_tratamiento: datos.fecha_tratamiento || new Date().toISOString(),
       diagnostico: datos.diagnostico || '',
       tratamiento: datos.tratamiento || '',
-      nota: datos.nota || ''
+      nota: datos.nota || '',
+      fecha_fin_tratamiento: datos.fecha_fin_tratamiento || null,
+      medicamento: datos.medicamento || '',
+      dosis: datos.dosis || null,
+      cantidad_horas: datos.cantidad_horas || null
     };
     
     const { data, error } = await supabase
@@ -62,7 +66,11 @@ const updateInformacionVeterinaria = async (id, datos) => {
       fecha_tratamiento: datos.fecha_tratamiento,
       diagnostico: datos.diagnostico,
       tratamiento: datos.tratamiento,
-      nota: datos.nota
+      nota: datos.nota,
+      fecha_fin_tratamiento: datos.fecha_fin_tratamiento,
+      medicamento: datos.medicamento,
+      dosis: datos.dosis,
+      cantidad_horas: datos.cantidad_horas
     };
     
     // Eliminar campos undefined
