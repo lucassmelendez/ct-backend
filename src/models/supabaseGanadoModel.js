@@ -67,7 +67,7 @@ const createGanado = async (datos) => {
         nota: datos.informacion_veterinaria.nota || '',
         fecha_fin_tratamiento: datos.informacion_veterinaria.fecha_fin_tratamiento || null,
         medicamento: datos.informacion_veterinaria.medicamento || '',
-        dosis: datos.informacion_veterinaria.dosis || null,
+        dosis: datos.informacion_veterinaria.dosis || '',
         cantidad_horas: datos.informacion_veterinaria.cantidad_horas || null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
@@ -640,7 +640,7 @@ const addMedicalRecord = async (id, medicalData) => {
       nota: medicalData.nota || medicalData.notas || '',
       fecha_fin_tratamiento: medicalData.fecha_fin_tratamiento || null,
       medicamento: medicalData.medicamento || '',
-      dosis: medicalData.dosis || null,
+      dosis: medicalData.dosis || '',
       cantidad_horas: medicalData.cantidad_horas || null
     };
     

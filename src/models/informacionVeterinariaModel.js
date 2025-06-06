@@ -15,7 +15,7 @@ const createInformacionVeterinaria = async (datos) => {
       nota: datos.nota || '',
       fecha_fin_tratamiento: datos.fecha_fin_tratamiento || null,
       medicamento: datos.medicamento || '',
-      dosis: datos.dosis || null,
+      dosis: datos.dosis || '',
       cantidad_horas: datos.cantidad_horas || null
     };
     
