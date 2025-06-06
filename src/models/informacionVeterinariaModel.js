@@ -9,7 +9,8 @@ const createInformacionVeterinaria = async (datos) => {
   try {
     // Preparar los datos según la estructura de la tabla
     const informacionVeterinariaData = {
-      fecha_tratamiento: datos.fecha_tratamiento || new Date().toISOString(),
+      fecha_ini_tratamiento: datos.fecha_ini_tratamiento || new Date().toISOString(),
+      fecha_fin_tratamiento: datos.fecha_fin_tratamiento || null,
       diagnostico: datos.diagnostico || '',
       tratamiento: datos.tratamiento || '',
       nota: datos.nota || ''
@@ -59,7 +60,8 @@ const getInformacionVeterinariaById = async (id) => {
 const updateInformacionVeterinaria = async (id, datos) => {
   try {
     const updateData = {
-      fecha_tratamiento: datos.fecha_tratamiento,
+      fecha_ini_tratamiento: datos.fecha_ini_tratamiento,
+      fecha_fin_tratamiento: datos.fecha_fin_tratamiento,
       diagnostico: datos.diagnostico,
       tratamiento: datos.tratamiento,
       nota: datos.nota
