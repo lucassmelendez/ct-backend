@@ -27,9 +27,7 @@ const createVentaGanado = async (datos) => {
     const ventaGanadoData = {
       id_venta_ganado: nuevoId,
       id_venta: datos.id_venta,
-      id_ganado: datos.id_ganado,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      id_ganado: datos.id_ganado
     };
     
     // Insertar en la tabla venta_ganado
@@ -281,7 +279,7 @@ const getAllVentaGanado = async () => {
           precio_compra
         )
       `)
-      .order('created_at', { ascending: false });
+      .order('id_venta_ganado', { ascending: false });
     
     if (error) {
       throw error;
