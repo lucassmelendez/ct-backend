@@ -29,9 +29,7 @@ const createVenta = async (datos) => {
       cantidad: datos.cantidad || 0,
       precio_unitario: datos.precio_unitario || 0,
       total: datos.total || (datos.cantidad * datos.precio_unitario),
-      comprador: datos.comprador || '',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      comprador: datos.comprador || ''
     };
     
     // Insertar en la tabla venta
@@ -97,16 +95,14 @@ const getVentaById = async (id) => {
  * @param {Object} datos - Datos actualizados
  * @returns {Promise<Object>} - Venta actualizada
  */
-const updateVenta = async (id, datos) => {
+  const updateVenta = async (id, datos) => {
   try {
     const updateData = {
-      ...datos,
-      updated_at: new Date().toISOString()
+      ...datos
     };
     
     // Remover campos que no deben actualizarse
     delete updateData.id_venta;
-    delete updateData.created_at;
     
     const { data, error } = await supabase
       .from('venta')
@@ -176,7 +172,7 @@ const getAllVentas = async () => {
           )
         )
       `)
-      .order('created_at', { ascending: false });
+      .order('id_venta', { ascending: false });
     
     if (error) {
       throw error;
@@ -210,7 +206,7 @@ const getVentasByComprador = async (comprador) => {
         )
       `)
       .ilike('comprador', `%${comprador}%`)
-      .order('created_at', { ascending: false });
+      .order('id_venta', { ascending: false });
     
     if (error) {
       throw error;
@@ -231,7 +227,7 @@ const getVentasStats = async () => {
   try {
     const { data, error } = await supabase
       .from('venta')
-      .select('total, cantidad, created_at');
+      .select('total, cantidad, id_venta');
     
     if (error) {
       throw error;
