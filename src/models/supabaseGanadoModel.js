@@ -28,7 +28,6 @@ const createGanado = async (datos) => {
       id_ganado: nuevoId,
       nombre: datos.nombre,
       numero_identificacion: datos.numero_identificacion || 0,
-      precio_compra: datos.precio_compra || 0,
       nota: datos.nota || null,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()

@@ -67,7 +67,6 @@ const getVentaById = async (id) => {
             id_ganado,
             nombre,
             numero_identificacion,
-            precio_compra,
             nota
           )
         )
@@ -168,7 +167,7 @@ const getAllVentas = async () => {
             id_ganado,
             nombre,
             numero_identificacion,
-            precio_compra
+            nota
           )
         )
       `)
@@ -201,7 +200,8 @@ const getVentasByComprador = async (comprador) => {
           ganado (
             id_ganado,
             nombre,
-            numero_identificacion
+            numero_identificacion,
+            nota
           )
         )
       `)

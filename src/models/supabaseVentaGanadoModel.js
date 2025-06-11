@@ -71,7 +71,6 @@ const getVentaGanadoById = async (id) => {
           id_ganado,
           nombre,
           numero_identificacion,
-          precio_compra,
           nota
         )
       `)
@@ -107,7 +106,6 @@ const getVentaGanadoByVentaId = async (ventaId) => {
           id_ganado,
           nombre,
           numero_identificacion,
-          precio_compra,
           nota
         )
       `)
@@ -276,7 +274,7 @@ const getAllVentaGanado = async () => {
           id_ganado,
           nombre,
           numero_identificacion,
-          precio_compra
+          nota
         )
       `)
       .order('id_venta_ganado', { ascending: false });
