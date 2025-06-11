@@ -2,6 +2,8 @@ const { supabase } = require('../config/supabase');
 const userModel = require('../models/supabaseUserModel');
 const ganadoModel = require('../models/supabaseGanadoModel');
 const fincaModel = require('../models/supabaseFincaModel');
+const ventaModel = require('../models/supabaseVentaModel');
+const ventaGanadoModel = require('../models/supabaseVentaGanadoModel');
 
 /**
  * Servicio centralizado para operaciones con Supabase
@@ -413,6 +415,178 @@ class SupabaseService {
       return await fincaModel.removeVeterinarianFromFinca(fincaId, vetAuthId);
     } catch (error) {
       console.error('Error al eliminar veterinario de la finca:', error);
+      throw error;
+    }
+  }
+
+  // ===== SERVICIOS DE VENTAS =====
+
+  /**
+   * Crea una nueva venta
+   * @param {Object} datos - Datos de la venta
+   * @returns {Promise<Object>} - Venta creada
+   */
+  async createVenta(datos) {
+    try {
+      return await ventaModel.createVenta(datos);
+    } catch (error) {
+      console.error('Error al crear venta:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Obtiene una venta por su ID
+   * @param {number} id - ID de la venta
+   * @returns {Promise<Object|null>} - Venta o null si no existe
+   */
+  async getVentaById(id) {
+    try {
+      return await ventaModel.getVentaById(id);
+    } catch (error) {
+      console.error('Error al obtener venta:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Actualiza una venta
+   * @param {number} id - ID de la venta
+   * @param {Object} datos - Datos a actualizar
+   * @returns {Promise<Object>} - Venta actualizada
+   */
+  async updateVenta(id, datos) {
+    try {
+      return await ventaModel.updateVenta(id, datos);
+    } catch (error) {
+      console.error('Error al actualizar venta:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Elimina una venta
+   * @param {number} id - ID de la venta
+   * @returns {Promise<boolean>} - true si se eliminó correctamente
+   */
+  async deleteVenta(id) {
+    try {
+      return await ventaModel.deleteVenta(id);
+    } catch (error) {
+      console.error('Error al eliminar venta:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Obtiene todas las ventas
+   * @returns {Promise<Array>} - Lista de ventas
+   */
+  async getAllVentas() {
+    try {
+      return await ventaModel.getAllVentas();
+    } catch (error) {
+      console.error('Error al obtener ventas:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Obtiene ventas por comprador
+   * @param {string} comprador - Nombre del comprador
+   * @returns {Promise<Array>} - Lista de ventas del comprador
+   */
+  async getVentasByComprador(comprador) {
+    try {
+      return await ventaModel.getVentasByComprador(comprador);
+    } catch (error) {
+      console.error('Error al obtener ventas por comprador:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Obtiene estadísticas de ventas
+   * @returns {Promise<Object>} - Estadísticas de ventas
+   */
+  async getVentasStats() {
+    try {
+      return await ventaModel.getVentasStats();
+    } catch (error) {
+      console.error('Error al obtener estadísticas de ventas:', error);
+      throw error;
+    }
+  }
+
+  // ===== SERVICIOS DE VENTA-GANADO =====
+
+  /**
+   * Crea una nueva relación venta-ganado
+   * @param {Object} datos - Datos de la relación
+   * @returns {Promise<Object>} - Relación creada
+   */
+  async createVentaGanado(datos) {
+    try {
+      return await ventaGanadoModel.createVentaGanado(datos);
+    } catch (error) {
+      console.error('Error al crear relación venta-ganado:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Obtiene ganado de una venta
+   * @param {number} ventaId - ID de la venta
+   * @returns {Promise<Array>} - Lista de ganado de la venta
+   */
+  async getVentaGanadoByVentaId(ventaId) {
+    try {
+      return await ventaGanadoModel.getVentaGanadoByVentaId(ventaId);
+    } catch (error) {
+      console.error('Error al obtener ganado de venta:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Obtiene ventas de un ganado
+   * @param {number} ganadoId - ID del ganado
+   * @returns {Promise<Array>} - Lista de ventas del ganado
+   */
+  async getVentaGanadoByGanadoId(ganadoId) {
+    try {
+      return await ventaGanadoModel.getVentaGanadoByGanadoId(ganadoId);
+    } catch (error) {
+      console.error('Error al obtener ventas de ganado:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Agrega múltiples ganados a una venta
+   * @param {number} ventaId - ID de la venta
+   * @param {Array} ganadoIds - Array de IDs de ganado
+   * @returns {Promise<Array>} - Array de relaciones creadas
+   */
+  async addGanadosToVenta(ventaId, ganadoIds) {
+    try {
+      return await ventaGanadoModel.addGanadosToVenta(ventaId, ganadoIds);
+    } catch (error) {
+      console.error('Error al agregar ganados a venta:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Elimina relaciones de una venta
+   * @param {number} ventaId - ID de la venta
+   * @returns {Promise<boolean>} - true si se eliminaron correctamente
+   */
+  async deleteVentaGanadoByVentaId(ventaId) {
+    try {
+      return await ventaGanadoModel.deleteVentaGanadoByVentaId(ventaId);
+    } catch (error) {
+      console.error('Error al eliminar relaciones de venta:', error);
       throw error;
     }
   }

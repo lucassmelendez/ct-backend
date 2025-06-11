@@ -7,6 +7,7 @@ const farmRoutes = require('./routes/farmRoutes');
 const usuarioFincaRoutes = require('./routes/usuarioFincaRoutes');
 const vinculacionRoutes = require('./routes/vinculacionRoutes');
 const informacionVeterinariaRoutes = require('./routes/informacionVeterinariaRoutes');
+const ventaRoutes = require('./routes/ventaRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -39,6 +40,7 @@ app.use('/api/farms', farmRoutes);
 app.use('/api/usuario-finca', usuarioFincaRoutes);
 app.use('/api/vincular', vinculacionRoutes);
 app.use('/api/informacion-veterinaria', informacionVeterinariaRoutes);
+app.use('/api/ventas', ventaRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'API de CowTracker funcionando correctamente' });
