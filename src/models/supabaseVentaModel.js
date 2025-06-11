@@ -30,9 +30,6 @@ const createVenta = async (datos) => {
       precio_unitario: datos.precio_unitario || 0,
       total: datos.total || (datos.cantidad * datos.precio_unitario),
       comprador: datos.comprador || '',
-      fecha: datos.fecha || new Date().toISOString(),
-      notas: datos.notas || null,
-      tipo_venta: datos.tipo_venta || null,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     };
